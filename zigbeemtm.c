@@ -209,9 +209,15 @@ uint8_t *zigbeemtm_frame2buffer(zigbee_frame *frame) {
 // отправляем команду
 ssize_t send_cmd(int fd, uint8_t *buffer, size_t size) {
     ssize_t count = 0;
+    ssize_t writen;
 
     while (count < size) {
-        count += write(fd, &buffer[count], size - count);
+        writen = write(fd, &buffer[count], size - count);
+        if (writen > 0) {
+            count += writen;
+        } else {
+            return -1;
+        }
     }
 
     return count;
