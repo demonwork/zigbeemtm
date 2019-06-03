@@ -213,7 +213,7 @@ ssize_t send_cmd(int fd, uint8_t *buffer, size_t size) {
 
     while (count < size) {
         writen = write(fd, &buffer[count], size - count);
-        if (writen > 0) {
+        if (writen >= 0) {
             count += writen;
         } else {
             return -1;
