@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #ifndef ZIGBEEMTM_H
 #define ZIGBEEMTM_H
