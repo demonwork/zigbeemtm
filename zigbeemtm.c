@@ -303,10 +303,6 @@ ssize_t send_mtm_cmd(int fd, uint16_t short_addr, void *mtm_cmd) {
     buffer_size = frame.len + 5;
     buffer[buffer_size - 1] = compute_fcs(buffer, buffer_size);
 
-    for (int i = 0; i < buffer_size; i++) {
-        printf("0x%02x, ", buffer[i]);
-    }
-
     rc = send_cmd(fd, buffer, buffer_size);
     free(buffer);
 
@@ -344,10 +340,6 @@ ssize_t send_mtm_cmd_ext(int fd, uint64_t addr, void *mtm_cmd) {
     buffer = zigbeemtm_frame2buffer(&frame);
     buffer_size = frame.len + 5;
     buffer[buffer_size - 1] = compute_fcs(buffer, buffer_size);
-
-    for (int i = 0; i < buffer_size; i++) {
-        printf("0x%02x, ", buffer[i]);
-    }
 
     rc = send_cmd(fd, buffer, buffer_size);
     free(buffer);
@@ -395,4 +387,11 @@ int8_t get_mtm_command_size(uint8_t type) {
     }
 
     return size;
+}
+
+
+void print_buffer_hex(uint8_t *buffer, size_t buffer_size) {
+    for (int i = 0; i < buffer_size; i++) {
+        printf("0x%02x, ", buffer[i]);
+    }
 }
