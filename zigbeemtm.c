@@ -244,6 +244,7 @@ ssize_t send_zb_cmd(int fd, uint16_t cmd, void *data) {
     zigbee_frame frame;
     ssize_t rc;
     uint8_t cin, cout;
+    zigbee_mt_cmd_af_data_request *request;
 
     // заполняем данными фрейм zigbee
     frame.sof = SOF;
@@ -271,7 +272,8 @@ ssize_t send_zb_cmd(int fd, uint16_t cmd, void *data) {
             break;
 
         case AF_DATA_REQUEST :
-            frame.len = 10;
+            request = data;
+            frame.len = 10 + request->adl;
             frame.cmd = AF_DATA_REQUEST;
             frame.zb_cmd = data;
             break;
