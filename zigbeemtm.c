@@ -57,9 +57,14 @@ int64_t zigbeemtm_get_cmd_data(uint16_t cmd, void *data, uint8_t *buffer) {
             buffer[i++] = af_data_request->adl;
 
             mt_cmd = ((zigbee_mt_cmd_af_data_request *) data)->mt_cmd;
-            header = mt_cmd;
-            size = zigbeemtm_get_mtm_cmd_data(header->type, mt_cmd, &buffer[i]);
-            size += i;
+            if (mt_cmd != NULL) {
+                header = mt_cmd;
+                size = zigbeemtm_get_mtm_cmd_data(header->type, mt_cmd, &buffer[i]);
+                size += i;
+            } else {
+                size = i;
+            }
+
             break;
 
         case AF_DATA_REQUEST_EXT:
@@ -80,9 +85,14 @@ int64_t zigbeemtm_get_cmd_data(uint16_t cmd, void *data, uint8_t *buffer) {
             i += 2;
 
             mt_cmd = ((zigbee_mt_cmd_af_data_request_ext *) data)->mt_cmd;
-            header = mt_cmd;
-            size = zigbeemtm_get_mtm_cmd_data(header->type, mt_cmd, &buffer[i]);
-            size += i;
+            if (mt_cmd != NULL) {
+                header = mt_cmd;
+                size = zigbeemtm_get_mtm_cmd_data(header->type, mt_cmd, &buffer[i]);
+                size += i;
+            } else {
+                size = i;
+            }
+
             break;
 
         case AF_REGISTER:
@@ -166,6 +176,10 @@ int64_t zigbeemtm_get_mtm_cmd_data(uint8_t cmd, void *data, uint8_t *buffer) {
             buffer[i++] = action->device;
             *(uint16_t *) (&buffer[i]) = action->data;
             i += 2;
+            break;
+
+        case MTM_CMD_TYPE_CONTACTOR:
+            // ни какой полезной нагрузки в этой команде нет
             break;
 
         default:
@@ -253,6 +267,18 @@ ssize_t send_zb_cmd(int fd, uint16_t cmd, void *data) {
             cout = (uint8_t) (((zigbee_mt_af_register *) data)->app_num_out_clusters * 2);
             frame.len = (uint8_t) (1 + 2 + 2 + 1 + 1 + 1 + 1 + cin + cout);
             frame.cmd = AF_REGISTER;
+            frame.zb_cmd = data;
+            break;
+
+        case AF_DATA_REQUEST :
+            frame.len = 10;
+            frame.cmd = AF_DATA_REQUEST;
+            frame.zb_cmd = data;
+            break;
+
+        case AF_DATA_REQUEST_EXT :
+            frame.len = 20;
+            frame.cmd = AF_DATA_REQUEST_EXT;
             frame.zb_cmd = data;
             break;
 
