@@ -50,6 +50,10 @@ enum {
     MTM_CMD_TYPE_CONTACTOR,
 };
 
+#define MBEE_API_DIGITAL_LINE7 0x0007
+
+#define MTM_DEVICE_LIGHT 0x0000
+
 // команда mt
 //typedef struct _zigbee_mt_cmd {
 //    uint8_t len;
